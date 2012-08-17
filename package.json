@@ -8,8 +8,12 @@
     "url": "git://github.com/tmpvar/chip.avr.lufa.git"
   },
   "main": "index.js",
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "intelhex": "0.0.1"
+  },
+  "devDependencies": {
+    "serialport" : "0.7.5"
+  },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
