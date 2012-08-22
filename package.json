@@ -1,7 +1,7 @@
 {
   "author": "Elijah Insua <tmpvar@gmail.com> (http://tmpvar.com)",
   "name": "chip.avr.lufacdc",
-  "description": "push firmware to an avr device running lufacdc firmware",
+  "description": "push firmware to an avr device running a lufacdc bootloader",
   "version": "0.0.1",
   "repository": {
     "type": "git",
