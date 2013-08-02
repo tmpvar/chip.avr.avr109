@@ -2,10 +2,10 @@
   "author": "Elijah Insua <tmpvar@gmail.com> (http://tmpvar.com)",
   "name": "chip.avr.lufacdc",
   "description": "push firmware to an avr device running a lufacdc bootloader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
-    "url": "git://github.com/tmpvar/chip.avr.lufa.git"
+    "url": "git://github.com/tmpvar/chip.avr.lufacdc.git"
   },
   "main": "index.js",
   "dependencies": {
@@ -13,9 +13,5 @@
   },
   "devDependencies": {
     "serialport" : "0.7.5"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
   }
 }
