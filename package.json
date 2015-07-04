@@ -12,6 +12,6 @@
     "intelhex": "0.0.1"
   },
   "devDependencies": {
-    "serialport" : "0.7.5"
+    "serialport" : "1.7.4"
   }
 }
