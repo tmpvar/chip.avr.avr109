@@ -2,7 +2,7 @@
   "author": "Elijah Insua <tmpvar@gmail.com> (http://tmpvar.com)",
   "name": "chip.avr.avr109",
   "description": "Flash firmware onto an avr device running a bootloader that speaks the avr109 protocol",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/tmpvar/chip.avr.lufacdc.git"
@@ -12,6 +12,6 @@
     "intelhex": "0.0.1"
   },
   "devDependencies": {
-    "serialport" : "1.7.4"
+    "serialport": "1.7.4"
   }
 }
