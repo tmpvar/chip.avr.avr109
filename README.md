@@ -1,4 +1,49 @@
-chip.avr.lufacdc
-================
+# chip.avr.avr109
 
-push firmware to an avr device running lufacdc firmware
+Flash firmware onto an avr device running a bootloader that speaks the [avr109](http://www.atmel.com/images/doc1644.pdf) protocol.
+
+## install
+
+`npm install avr109`
+
+## use
+
+```javascript
+var avr109 = require('chip.avr.avr109');
+var serialport = require('serialport');
+var sp = new serialport.SerialPort('/dev/tty.usbmodemfd121');
+var fs = require('fs');
+
+sp.on('open', function() {
+  fs.readFile(__dirname + '/test.hex', function(err, data) {
+
+    avr109.init(sp, { signature: 'LUFACDC' }, function (err, flasher) {
+      if (err) {
+        throw err;
+      }
+      flasher.erase(function() {
+        console.log('initialized');
+
+        flasher.program(data.toString(), function(err) {
+          if (err) throw err;
+          console.log('programmed!');
+
+          flasher.verify(function(err) {
+            if (err) {
+              throw err
+            }
+            flasher.fuseCheck(function(err) {
+              if (err) throw err;
+              console.log('OK!');
+            });
+          });
+        });
+      });
+    });
+  });
+});
+```
+
+## license
+
+[MIT](LICENSE.txt)

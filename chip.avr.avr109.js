@@ -232,6 +232,11 @@ out.Flasher.prototype = {
 };
 
 out.init = function(serialport, options, fn) {
-  var flasher = new out.Flasher(serialport, options);
+  if (typeof options === 'function' && !fn) {
+    fn = options;
+    options = {};
+  }
+
+w  var flasher = new out.Flasher(serialport, options);
   flasher.prepare(fn);
 };
