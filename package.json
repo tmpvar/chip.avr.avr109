@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/tmpvar/chip.avr.lufacdc.git"
+    "url": "git://github.com/tmpvar/chip.avr.avr109.git"
   },
   "main": "chip.avr.avr109.js",
   "dependencies": {
