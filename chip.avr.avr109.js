@@ -237,6 +237,6 @@ out.init = function(serialport, options, fn) {
     options = {};
   }
 
-w  var flasher = new out.Flasher(serialport, options);
+  var flasher = new out.Flasher(serialport, options);
   flasher.prepare(fn);
 };
