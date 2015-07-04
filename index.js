@@ -13,6 +13,7 @@ out.Flasher = function(serialport, options) {
   var that = this;
   this.options = options || {};
   this.sp = serialport;
+  this.signature = this.options.signature || 'LUFACDC';
 
   if (this.options.debug) {
     this.sp.on('data', function(d) {
@@ -76,8 +77,8 @@ out.Flasher.prototype = {
   prepare : function(fn) {
     var that = this;
     this.c('S', function(d) {
-          if (d.toString() !== 'LUFACDC') {
-            fn(new Error('Invalid device signature'));
+          if (d.toString() !== that.signature) {
+            fn(new Error('Invalid device signature; expecting: ' + that.signature + ' received: ' + d.toString()));
           }
         })
         .c('V')
@@ -230,7 +231,7 @@ out.Flasher.prototype = {
   }
 };
 
-out.init = function(serialport, fn) {
-  var flasher = new out.Flasher(serialport);
+out.init = function(serialport, options, fn) {
+  var flasher = new out.Flasher(serialport, options);
   flasher.prepare(fn);
 };
