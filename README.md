@@ -4,7 +4,7 @@ Flash firmware onto an avr device running a bootloader that speaks the [avr109](
 
 ## install
 
-`npm install avr109`
+`npm install chip.avr.avr109`
 
 ## use
 
