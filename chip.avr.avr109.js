@@ -1,5 +1,5 @@
 var
-  intelhex = require('intelhex'),
+  intelhex = require('intel-hex'),
   Stream   = require('stream').Stream,
   util     = require('util');
 
@@ -132,7 +132,7 @@ out.Flasher.prototype = {
     this.totalBytes = 0;
 
     this.c([d('A'), 0x00, 0x00], function() {
-      converter = intelhex(fullString);
+      converter = intelhex.parse(fullString);
 
       converter.on('data', function(data) {
 
