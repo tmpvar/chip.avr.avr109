@@ -1,5 +1,5 @@
 var
-  intelhex = require('intelhex'),
+  intelHex = require('intel-hex'),
   Stream   = require('stream').Stream,
   util     = require('util');
 
@@ -132,29 +132,20 @@ out.Flasher.prototype = {
     this.totalBytes = 0;
 
     this.c([d('A'), 0x00, 0x00], function() {
-      converter = intelhex(fullString);
+      converter = intelHex.parse(fullString);
 
-      converter.on('data', function(data) {
+      that.totalBytes = converter.data.length;
+      // buffer the bytes so we can push them in the expected size on 'end'
+      Array.prototype.push.apply(bytes, converter.data);
 
-        that.totalBytes+=data.bytes.length;
-        // buffer the bytes so we can push them in the expected size on 'end'
-        Array.prototype.push.apply(bytes, data.bytes);
-      });
+      that.options.debug && console.log('programming', bytes.length, 'bytes');
+      that.chunksSent = [];
 
-      converter.on('end', function() {
-        that.options.debug && console.log('programming', bytes.length, 'bytes');
-        that.chunksSent = [];
-
-        for (var i=0; i<bytes.length; i+=that.flashChunkSize) {
-          var chunk = bytes.slice(i, i+that.flashChunkSize);
-          that.chunksSent.push(chunk);
-          that.c([d('B'), 0x00, chunk.length, d('F')].concat(chunk));
-        }
-      });
-
-      converter.on('error', function(err) {
-        throw err;
-      });
+      for (var i=0; i<bytes.length; i+=that.flashChunkSize) {
+        var chunk = Array.prototype.slice.call(converter.data.slice(i, i+that.flashChunkSize));
+        that.chunksSent.push(chunk);
+        that.c([d('B'), 0x00, chunk.length, d('F')].concat(chunk));
+      }
     });
 
     this.run(function() { fn && fn() });

@@ -9,7 +9,7 @@
   },
   "main": "chip.avr.avr109.js",
   "dependencies": {
-    "intelhex": "0.0.1"
+    "intel-hex": "*"
   },
   "devDependencies": {
     "serialport": "1.7.4"
