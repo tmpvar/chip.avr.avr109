@@ -172,7 +172,7 @@ out.Flasher.prototype = {
           if (localChunk.length !== deviceData.length) {
             fn(new Error(
               "Flashed content length differs! local:" + localChunk.length +
-              'vs device: ' + d.length
+              ' vs device: ' + deviceData.length
             ));
           }
 
