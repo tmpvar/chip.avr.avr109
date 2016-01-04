@@ -159,7 +159,7 @@ out.Flasher.prototype = {
       var
         index = 0,
         compare = function(deviceData) {
-
+          var error = null;
           var localChunk = that.chunksSent[index];
           index++;
 
@@ -170,17 +170,21 @@ out.Flasher.prototype = {
 
           // Quick check to make sure the lengths match
           if (localChunk.length !== deviceData.length) {
-            fn(new Error(
-              "Flashed content length differs! local:" + localChunk.length +
-              'vs device: ' + d.length
+            return fn(new Error(
+              "Flashed content length differs! local: " + localChunk.length +
+              ' vs device: ' + deviceData.length
             ));
           }
 
           localChunk.forEach(function(val, idx) {
             if (val !== deviceData.readUInt8(idx)) {
-              fn(new Error('Firmware on the device does not match local data'));
+              error = new Error('Firmware on the device does not match local data');
             }
           });
+
+          if (error) {
+            return fn(error);
+          }
 
           process.nextTick(function() {
             var readSize = that.flashChunkSize;
