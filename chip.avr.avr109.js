@@ -137,6 +137,8 @@ out.Flasher.prototype = {
       that.totalBytes = converter.data.length;
       // buffer the bytes so we can push them in the expected size on 'end'
       Array.prototype.push.apply(bytes, converter.data);
+      // copy this array so we can use it strictly for comparing later
+      that.allBytes = bytes;
 
       that.options.debug && console.log('programming', bytes.length, 'bytes');
       that.chunksSent = [];
@@ -160,22 +162,17 @@ out.Flasher.prototype = {
         index = 0,
         compare = function(deviceData) {
           var error = null;
-          var localChunk = that.chunksSent[index];
           index++;
 
-          if (index >= that.chunksSent.length) {
+          if (!that.allBytes.length) {
             fn && fn();
             return;
           }
 
-          // Quick check to make sure the lengths match
-          if (localChunk.length !== deviceData.length) {
-            return fn(new Error(
-              "Flashed content length differs! local: " + localChunk.length +
-              ' vs device: ' + deviceData.length
-            ));
-          }
+          var deviceDataLength = deviceData.length;
+          var localChunk = that.allBytes.splice(0, deviceDataLength);
 
+          // iterate through the bytes sent to compare with the latest bytes received
           localChunk.forEach(function(val, idx) {
             if (val !== deviceData.readUInt8(idx)) {
               error = new Error('Firmware on the device does not match local data');
