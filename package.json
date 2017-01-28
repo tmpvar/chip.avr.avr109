@@ -12,6 +12,6 @@
     "intel-hex": "*"
   },
   "devDependencies": {
-    "serialport": "1.7.4"
+    "serialport": "4"
   }
 }
