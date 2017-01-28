@@ -86,7 +86,10 @@ out.Flasher.prototype = {
         .c('p')
         .c('a')
         .c('b', function(d) {
-          that.flashChunkSize = d.readUInt8(2);
+          if ((d.toString() || 'X')[0] != 'Y') {
+            fn(new Error('Buffered memory access not supported.'));
+          }
+          that.flashChunkSize = d.readUInt16BE(1);
         })
         .c('t')
         .c('TD')
@@ -146,7 +149,7 @@ out.Flasher.prototype = {
       for (var i=0; i<bytes.length; i+=that.flashChunkSize) {
         var chunk = Array.prototype.slice.call(converter.data.slice(i, i+that.flashChunkSize));
         that.chunksSent.push(chunk);
-        that.c([d('B'), 0x00, chunk.length, d('F')].concat(chunk));
+        that.c([d('B'), (chunk.length >> 8) & 0xFF, chunk.length & 0xFF, d('F')].concat(chunk));
       }
     });
 
@@ -189,14 +192,14 @@ out.Flasher.prototype = {
             if (that.totalBytes - index*that.flashChunkSize < that.flashChunkSize) {
               readSize = that.totalBytes - index*that.flashChunkSize;
             }
-            that.c([d('g'), 0x00, readSize, d('F')], compare);
+            that.c([d('g'), (readSize >> 8) & 0xFF, readSize & 0xFF, d('F')], compare);
             that.run();
           });
         };
 
       that.options.debug && console.log('\n\nVerifying flash..')
 
-      that.c([d('g'), 0x00, that.flashChunkSize, d('F')], compare);
+      that.c([d('g'), (that.flashChunkSize >> 8) & 0xFF, that.flashChunkSize & 0xFF, d('F')], compare);
       that.run();
     });
     that.run();
