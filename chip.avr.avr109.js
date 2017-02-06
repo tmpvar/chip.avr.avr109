@@ -31,12 +31,13 @@ out.Flasher = function(serialport, options) {
     });
   }
 
-  this.c = function(value, fn) {
+  this.c = function(value, fn, expectedResponseLength) {
     that.cmds.push({
       value : value,
       callback : function(data) {
         fn && fn(data);
-      }
+      },
+      expectedResponseLength: expectedResponseLength
     });
     return this;
   }
@@ -56,18 +57,30 @@ out.Flasher.prototype = {
       if (cmd) {
         running = true;
         that.options.debug && process.stdout.write('Send: ' + cmd.value);
-        that.sp.once('data', function(d) {
-          that.running = false;
-          cmd.callback(d);
+        var response = new Buffer(0);
+        var onData = function(d) {
+          response = Buffer.concat([
+            response,
+            d
+          ]);
 
-          process.nextTick(function() {
-            if (that.cmds.length > 0) {
-              that.run(fn);
-            } else {
-              fn && fn();
-            }
-          });
-        });
+          if (cmd.expectedResponseLength === undefined || // optional expected length not passed in
+              cmd.expectedResponseLength <= response.length) {
+            that.sp.removeListener('data', onData);
+            that.running = false;
+            cmd.callback(response);
+
+            process.nextTick(function() {
+              if (that.cmds.length > 0) {
+                that.run(fn);
+              } else {
+                fn && fn();
+              }
+            });
+          }
+        };
+
+        that.sp.on('data', onData);
 
         that.sp.write(cmd.value);
       }
@@ -192,14 +205,14 @@ out.Flasher.prototype = {
             if (that.totalBytes - index*that.flashChunkSize < that.flashChunkSize) {
               readSize = that.totalBytes - index*that.flashChunkSize;
             }
-            that.c([d('g'), (readSize >> 8) & 0xFF, readSize & 0xFF, d('F')], compare);
+            that.c([d('g'), (readSize >> 8) & 0xFF, readSize & 0xFF, d('F')], compare, readSize);
             that.run();
           });
         };
 
       that.options.debug && console.log('\n\nVerifying flash..')
 
-      that.c([d('g'), (that.flashChunkSize >> 8) & 0xFF, that.flashChunkSize & 0xFF, d('F')], compare);
+      that.c([d('g'), (that.flashChunkSize >> 8) & 0xFF, that.flashChunkSize & 0xFF, d('F')], compare, that.flashChunkSize);
       that.run();
     });
     that.run();
