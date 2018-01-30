@@ -218,7 +218,7 @@ out.Flasher.prototype = {
     that.run();
   },
 
-  fuseCheck :  fuseCheck = function(fn) {
+  fuseCheck : function(fn) {
     this.options.debug && console.log('checking fuses');
     // fuse check
     this.c('F')
